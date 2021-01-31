@@ -1,0 +1,153 @@
+<%- include('./partials/header') %>
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"><% if(editing) { %>Kurs bearbeiten<% } else { %>Neuen Kurs erstellen<% } %></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active"><% if(editing) { %>Kurs bearbeiten<% } else { %>Neuen Kurs erstellen<% } %></li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements disabled -->
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h3 class="card-title"><% if(editing) { %>Kurs bearbeiten<% } else { %>Angaben zum neuen Kurs<% } %></h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form id="frm_neuer_kurs" name="frm_neuer_kurs" method="POST" action="<% if(editing) { %>/kurs-bearbeiten<% } else { %>/neuer-kurs<% } %>" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input required type="text" class="form-control" placeholder="..." value="<% if(editing) { %><%= kurs.kursName %><% } %>"
+                                                name="kursName">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Kursleiter Anzahl</label>
+                                            <input required type="number" min="0" step="1" class="form-control" value="<% if(editing) { %><%= kurs.anzahlKursleiter %><% } %>"
+                                                placeholder="Enter ..." name="anzahlKursleiter">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- textarea -->
+                                        <div class="form-group">
+                                            <label>Beschreibung</label>
+                                            <textarea class="form-control" rows="3" placeholder="..."
+                                                name="beschreibung"><% if(editing) { %><%= kurs.beschreibung %><% } %></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Max. Teilnehmer</label>
+                                            <input required class="form-control" type="number" min="0" step="1" value="<% if(editing) { %><%= kurs.maxTeilnehmer %><% } %>"
+                                                placeholder="Enter ..." name="maxTeilnehmer">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+
+                                        <div class="form-group">
+                                            <label>Preis</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">€</span>
+                                                </div>
+                                                <input required type="number" min="0" step="0.01" class="form-control" value="<% if(editing) { %><%= kurs.preisKurs %><% } %>"
+                                                    name="preisKurs">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Prüfungskosten</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">€</span>
+                                                </div>
+                                                <input type="number" min="0" step="0.01" class="form-control" value="<% if(editing) { %><%= kurs.preisPruefung %><% } %>"
+                                                    name="preisPruefung">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Stunden pro Tag</label>
+                                            <input required type="number" min="0" max="24" step="1" class="form-control" value="<% if(editing) { %><%= kurs.dauerStunden %><% } %>"
+                                                placeholder="Enter ..." name="dauerStunden">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Tage</label>
+                                            <input required type="number" min="0" step="1" class="form-control" value="<% if(editing) { %><%= kurs.dauerTage %><% } %>"
+                                                placeholder="Enter ..." name="dauerTage">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Material</label>
+                                            <input required type="text" class="form-control" placeholder="Enter ..." value="<% if(editing) { %><%= kurs.material %><% } %>"
+                                                name="material">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <% if(editing && kurs.kursLogo) { %>
+                                                <label>Bild löschen?</label>
+                                                <input class="form control" type="checkbox" id="deleteBildkurs" name="deleteBildkurs">
+                                               <img class="form control direct-chat-img" src="<%= kurs.kursLogo %>" alt="kursLogo">
+            
+                                               
+                                            <% } else { %>
+
+                                            <label>Kurslogo (optional)</label>
+                                            <% } %>
+                                            <div class="custom-file">
+                                                <input type="file" class="form-control" id="kursLogo" name="kursLogo">
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+                                </div>
+                                <input type="hidden" name="kursId" value="<% if(editing) { %><%= kurs.id %><% } %>">
+                                <button class="btn btn-dark" type="submit">Speichern</button>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+    <%- include('./partials/footer') %>

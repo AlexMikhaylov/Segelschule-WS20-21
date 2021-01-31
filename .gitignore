@@ -1,0 +1,13 @@
+# a script to fill the database with dummy data
+test.js
+
+# node modules
+node_modules/
+
+# adminLTE css, js and images
+public/assets
+public/dist
+public/plugins
+public/images
+public/js
+public/fontawesome-free-5.12.0-web

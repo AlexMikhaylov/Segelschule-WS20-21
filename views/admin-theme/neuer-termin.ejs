@@ -1,0 +1,70 @@
+<%- include('./partials/header') %>
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"><% if(editing) { %>Kursplan ändern<% } else { %>Neuen Kurstermin anlegen<% } %></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active"><% if(editing) { %>Kursplan bearbeiten<% } else { %>Neuen Kursplan erstellen<% } %></li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements disabled -->
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h3 class="card-title"><% if(editing) { %>Termine ändern<% } else { %>Neuen Kursplan erstellen<% } %></h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form id="frm_neuer_kursplan" name="frm_neuer_kursplan">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Wählen Sie einen Kurs aus</label>
+                                            
+                                                <% if(kurse.length> 0) { %>
+                                                <select required class="form-control" name="kursId">
+                                                    <option value="">Kurs auswählen</option>
+                                                    <% for (let kurs of kurse) { %>
+                                                    <option value="<%= kurs.id %>">ID <%= kurs.id %>: <%= kurs.kursName %>; Dauer:  <%= kurs.dauerStunden %> Stunden je <%= kurs.dauerTage %> Tage</option>
+                                                    <% } %>
+                                                </select>    
+                                                <% } else { %>
+                                                    <p>Keine Kurse vorhanden</p>
+                                                
+                                                <a href="/neuer-kurs" class="btn btn-warning btn-block btn-xs">Erstellen Sie den ersten Kurs, um Kurstermine eintragen zu können</a>
+                                                <% } %>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-dark" type="submit">Weiter</button>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+    <%- include('./partials/footer') %>

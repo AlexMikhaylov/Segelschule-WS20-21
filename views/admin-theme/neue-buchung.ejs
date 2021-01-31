@@ -1,0 +1,211 @@
+<%- include('./partials/header') %>
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"><% if(editing) { %>Buchung bearbeiten<% } else { %>Neue Buchung<% } %></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active"><% if(editing) { %>Buchung bearbeiten<% } else { %>Neue Buchung<% } %></li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements disabled -->
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h3 class="card-title"><% if(editing) { %>Buchung ändern<% } else { %>Neue Buchung<% } %></h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form id="frm_neue_buchung" name="frm_neue_buchung" method="POST"
+                                action="<% if(editing) { %>/buchung-bearbeiten<% } else { %>/neue-buchung<% } %>">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <% if (editing){ %>
+                                            <input type="hidden" name="kundenIdEdit" value="<%=buchung.KundeId%>">
+                                            <div class="form-group">
+                                                <label>Kunde</label>
+                                                <select disabled type="text" class="form-control">
+                                                    <option value="<%=buchung.KundeId%>">ID <%= buchung.KundeId %>: 
+                                                        <%=buchung.Kunde.name1 %>
+                                                        <%= buchung.Kunde.name2 %>; Anzahl: <%= buchung.Kunde.anzahl %></option>
+                                                </select>                                               
+                                            </div>
+                                        <% }else{ %>
+                                        <div class="form-group">
+                                            <label>Wählen Sie Kunden aus:</label>
+
+                                            <% if(kunden.length> 0) {  %>
+                                                <select required class="form-control" name="kundenId">
+                                                    <option value="">Kunden auswählen</option>
+                                                    <% for (let kunde of kunden) { %>
+                                        
+                                                        <option value="<%= kunde.id %>">ID <%= kunde.id %>: <%=
+                                                                    kunde.name1 %>
+                                                                    <%= kunde.name2 %>; Anzahl: <%= kunde.anzahl %>
+                                                        </option>
+                                                        
+                                                        <% } %>
+                                                </select>
+                            
+                                                <% } else { %>
+                                                    <p>Keine Kunden vorhanden</p>
+
+                                                    <a href="/neuer-kunde"
+                                                        class="btn btn-warning btn-block btn-xs">Legen Sie den ersten
+                                                        Kunden an, um Buchungen vornehmen zu können</a>
+                                                    <% } %>
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                    <% if(kursplan.Kur.id) { %>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>Kursbeginn</label>
+                                                <input class="form-control" type="text" disabled
+                                                    value="<%= kursplan.datumStart %>">
+                                                    <input type="hidden" name="kursId" value="<%= kursplan.Kur.id %>">
+                                                    <input type="hidden" name="kursMax" value="<%= kursplan.Kur.maxTeilnehmer %>">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>Kursende</label>
+                                                <input class="form-control" type="text" disabled
+                                                    value="<%= kursplan.datumEnde %>">
+                                                    <input type="hidden" name="kursplanId" value="<%= kursplan.id %>">
+                                            </div>
+                                        </div>
+
+                                        <% } else { %>
+                                            <p>Keine Kurse in diesem Kursplan vorhanden</p>
+
+                                            <a href="/neuer-termin" class="btn btn-warning btn-block btn-xs">Erstellen
+                                                Sie den ersten Kursplan, um Buchungen vornehmen zu können</a>
+                                            <% } %>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+
+                                        <div class="form-group">
+                                            <label>Status</label>
+
+                                            <input disabled type="text" class="form-control"
+                                                value="<% let verfuegbar = (kursplan.Kur.maxTeilnehmer - kursplan.eingeschrieben) %> <%= verfuegbar %> Plätze verfügbar; <%=kursplan.eingeschrieben%> eingeschrieben">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Kursleiter</label>
+                                            <% for (let ma of kursplan.Mitarbeiters) { %>
+
+                                                <input disabled type="text" class="form-group form-control"
+                                                    value="<%= ma.vorname %> <%= ma.nachname %>">
+
+
+                                                <% } %>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        
+                                        <div class="form-group checkbox">
+                                            <label>
+                                            <input type="checkbox" class="checkbox" name="kursPreisCheckbox"> Teinahme am Kurs €</label>
+                                            <input disabled type="number" class="form-control" 
+                                                value="<%= kursplan.Kur.preisKurs %>">
+                                        </div>
+
+                                        <div class="form-group checkbox">
+                                            
+                                            <% if(kursplan.Kur.preisPruefung) { %>
+                                                <label><input type="checkbox" class="checkbox" name="kursPruefungCheckbox"> Prüfungsgebühr €</label>
+                                                <input disabled type="number" class="form-control"
+                                                    value="<%= kursplan.Kur.preisPruefung %>">
+                                                <% } else { %>
+                                                    <label>Prüfungsgebühr €</label>
+                                                    <input disabled type="text" class="form-control"
+                                                        value="keine Prüfung">
+                                                    <% } %>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" name="mwst">
+                                                    zzgl. MwSt.
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="">Termine</label>
+
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Datum</th>
+                                                    <th>Beginn</th>
+                                                    <th>Ende</th>
+                                                    <th>Bemerkungen</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <% for (let termin of kursplan.Termins) { %>
+                                                    <tr>
+                                                        <td>
+                                                            <%= termin.datum %>
+                                                        </td>
+                                                        <td>
+                                                            <%= termin.beginnUhrzeit %>
+                                                        </td>
+                                                        <td>
+                                                            <%= termin.endeUhrzeit %>
+                                                        </td>
+                                                        <td>
+                                                            <%= termin.bemerkung %>
+                                                        </td>
+                                                    </tr>
+                                                    <% } %>
+                                            </tbody>
+
+                                        </table>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <button class="btn btn-dark" type="submit">Speichern</button>
+                                    </div>
+                                </div>
+
+                                <% if(editing) { %>
+                                    <input type="hidden" name="buchungId" value="<%= buchung.id %>">
+                                <% } %>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+    <%- include('./partials/footer') %>

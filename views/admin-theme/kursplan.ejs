@@ -1,0 +1,182 @@
+<%- include('./partials/header') %>
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Kursplan</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Kursplan</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <!-- general form elements disabled -->
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h3 class="card-title">Kursplan</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="table-list-schedule" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Kurslogo</th>
+                                        <th>Kurs</th>
+                                        <th>Termine</th>
+                                        <th>Kursleiter</th>
+                                        <th>eingeschrieben</th>
+                                        <th>Verfügbarkeit</th>
+                                        <th>Aktion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(data.length> 0) { %>
+                                        <% for (let kursplan of data) { %>
+                                            <tr>
+                                            <!--Logo-->
+                                            <td>
+                                                <% if(!kursplan.Kur.kursLogo) { %>
+                                                    <img class="direct-chat-img"
+                                                        src="/assets/images/big/kurslogo.jpg" alt="logo">
+                                                    <% } else {%>
+                                                        <img class="direct-chat-img" src="<%= kursplan.Kur.kursLogo %>"
+                                                            alt="profilbild">
+                                                        <% } %>
+                                            </td>
+                                            <!--Kurs-->
+                                            <td>
+                                                <a href="/kurs-bearbeiten/<%= kursplan.Kur.id %>?edit=true">
+                                                    <%= kursplan.Kur.kursName %>
+                                                </a>
+
+                                            </td>
+                                            <!--Termine-->
+                                            <td id="external-events">
+                                                <% if(kursplan.Termins.length> 0) { %>
+                                                    <% if(kursplan.Termins.length !== kursplan.Kur.dauerTage) { %>
+
+                                                        <p class="text-danger"> Anzahl der Termine widerspricht der
+                                                            eingetragenen Kursdauer <br> (<%=kursplan.Termins.length %>
+                                                                Termine und <%= kursplan.Kur.dauerTage %> Tage
+                                                                    Kursdauer)!</p>
+                                                        <% } %>
+
+                                                            <% for (let termin of kursplan.Termins) { %>
+
+                                                                <p>
+                                                                    <%= termin.datum %>: <%= termin.beginnUhrzeit %>-<%=
+                                                                                termin.endeUhrzeit %>
+                                                                                <%= termin.bemerkung %>
+                                                                </p>
+
+
+                                                                <% } %>
+
+                                                                
+                                                                    <% } else { %>
+                                                                    keine Termine wurden für diesen Kursplan gefunden
+                                                                    <% } %>
+                                            </td>
+                                            <!--Kursleiter-->
+                                            <td>
+                                                <% if(kursplan.Mitarbeiters.length > 0) { %>
+
+                                                    <% if(kursplan.Mitarbeiters.length !== kursplan.Kur.anzahlKursleiter) { %>
+
+                                                        <p class="text-danger"> Anzahl der Kursleiter widerspricht der
+                                                            Kursbeschreibung <br> (<%=kursplan.Mitarbeiters.length %>)</p>
+                                                        <% } %>
+
+                                                    <% for (let ma of kursplan.Mitarbeiters) { %>
+                                                        <a href="/mitarbeiter-bearbeiten/<%= ma.id %>?edit=true">
+                                                        <%= ma.vorname %>
+                                                            <%= ma.nachname %><br>
+                                                        </a>
+
+
+                                                <% }}else { %> keine Kursleiter hinterlegt <% } %>
+                                            </td>
+                                            <td>
+                                                <%= kursplan.eingeschrieben %> von max. <%= kursplan.Kur.maxTeilnehmer %>
+                                            </td>
+                                            <td>
+                                                <% const verfuegbar=kursplan.Kur.maxTeilnehmer -
+                                                    kursplan.eingeschrieben; if (verfuegbar <=0) {%><span class="text-danger">ausgebucht</span> <% } else
+                                                        { %>
+                                                        <button class="btn btn-success"><%= verfuegbar %></button>  <br>
+                                                        <a href="<% if (verfuegbar > 0) { %>/kursplan-buchen/<%= kursplan.id %>?order=true <% } %>"
+                                                            class="btn bg-navy btn-flat"><i class="fa fa-cart-arrow-down"></i></a>
+                                                            <% } %>
+                                            </td>
+                                            <td>
+                                                <a href="/kursplan-bearbeiten/<%= kursplan.id %>?edit=true"
+                                                    class="btn btn-primary"><i class="fa fa-edit"></i></a>
+
+                                                <form action="/kursplan-loeschen" method="POST"
+                                                    id="frm-delete-kursplan-<%= kursplan.id %>">
+
+                                                    <input type="hidden" name="kursplanId" value="<%= kursplan.id %>">
+
+                                                </form>
+                                                <a href="javascript:void(0)"
+                                                    onclick="if(confirm('Bist Du sicher, dass dieser Kursplan mit allen Terminen und Buchungen gelöscht werden soll?')) { $('#frm-delete-kursplan-<%= kursplan.id %>').submit() }"
+                                                    class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                            <% } %>
+                                                <% } %>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Kurslogo</th>
+                                        <th>Kurs</th>
+                                        <th>Termine</th>
+                                        <th>Kursleiter</th>
+                                        <th>eingeschrieben</th>
+                                        <th>Verfügbarkeit</th>
+                                        <th>Aktion</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row -->
+
+            <!--calendar row-->
+            <div class="row">
+                <div class="col-md-12">
+                  <div class="card card-primary">
+                    <div class="card-body p-0">
+                      <!-- THE CALENDAR -->
+                      <div id="calendar"></div>
+                    </div>
+                    <!-- /.card-body -->
+                  </div>
+                  <!-- /.card -->
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+    <%- include('./partials/footer') %>

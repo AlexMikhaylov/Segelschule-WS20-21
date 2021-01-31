@@ -1,0 +1,183 @@
+<%- include('./partials/header') %>
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">
+                        <% if(editing) { %>Kursplan ändern<% } else { %>Neuen Kursplan anlegen<% } %>
+                    </h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">
+                            <% if(editing) { %>Kursplan bearbeiten<% } else { %>Neuen Kursplan erstellen<% } %>
+                        </li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements disabled -->
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <% if(editing) { %>Kursplan ändern<% } else { %>Neuen Kursplan für "<%= kurs.kursName %>
+                                            " erstellen<% } %>
+                            </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form id="frm_neuer_kursplan2" name="frm_neuer_kursplan2"
+                                action="<% if(editing) { %>/kursplan-bearbeiten<% } else { %>/neuer-termin<% } %>"
+                                method="POST">
+
+                                <div class="row">
+                                    <div class="col-sm-6 border">
+                                        <% if(kurs.kursLogo) { %>
+                                            <img width="200px" src="<%= kurs.kursLogo %>" alt="">
+                                            <% } else {%>
+                                                <img src="/assets/images/big/kurslogo.jpg" alt="">
+                                                <% } %>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Dauer:</label>
+
+                                            <p>
+                                                <%= kurs.dauerStunden %> Stunden je <%= kurs.dauerTage %> Tage
+                                            </p>
+                                            <label>Anzahl der Kursleiter:</label>
+                                            <p>
+                                                <%= kurs.anzahlKursleiter %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+
+                                    <div class="col-sm-6 border">
+                                        <div class="form-group">
+                                            <label>
+                                                <%= kurs.kursName %>
+                                            </label>
+                                            <h5>Kursbeschreibung</h5>
+                                            <p>
+                                                <%= kurs.beschreibung %>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 ">
+                                        <div class="form-group">
+                                            <label>Tragen Sie <%= kurs.dauerTage %> neue Termine und die Startzeiten
+                                                    ein:</label>
+                                            <p>Laut der Kursinformation werden <%= kurs.dauerStunden %> Stunden je
+                                                    Termin eingeplant</p>
+
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            Datum
+                                                        </th>
+                                                        <th>
+                                                            Startzeit
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>
+                                                        </th>
+                                                        <th>
+
+                                                        </th>
+                                                    </tr>
+
+                                                <tbody>
+                                                    <% for(let i=1; i <= kurs.dauerTage; i++){ %>
+                                                        <tr>
+                                                            <td>
+                                                                <input required type="date" class="form-control"
+                                                                    name="termine" <% if(editing){ %> value="<%= kursplan.Termins[i - 1].datum %>" <%}%>>
+                                                            </td>
+                                                            <td>
+                                                                <input required type="time" class="form-control"
+                                                                    min="07:00" max="18:00" name="startZeiten" <% if(editing){ %> value="<%= kursplan.Termins[i - 1].beginnUhrzeit %>" <%}%>>
+
+                                                             
+
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="text" class="form-control" placeholder="Bemerkungen Termin <%=i%>"
+                                                                    name="bemerkungen" <% if(editing){ %> value="<%= kursplan.Termins[i - 1].bemerkung %>" <%}%>>
+
+                                                            </td>
+                                                            <td>
+
+                                                            </td>
+                                                        </tr>
+
+
+                                                        <% } %>
+                                                </tbody>
+                                                </thead>
+                                            </table>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 border">
+                                        <div class="form-group">
+                                            <label>Wählen Sie <%= kurs.anzahlKursleiter %> Kursleiter aus:</label>
+                                            <select required <% if(kurs.anzahlKursleiter> 1) {%>multiple="multiple"<%}
+                                                    %> name="kursleiter" class="form-control">
+                                                    <% for(let ma of mitarbeiter){ %>
+                                                        <option value="<%=ma.id%>">
+                                                            <%=ma.vorname%>
+                                                                <%=ma.nachname%>
+                                                        </option>
+                                                        <% } %>
+                                            </select>
+                                            <input type="hidden" name="kursId" value="<%=kurs.id%>">
+                                            <% if(editing) { %>
+                                                <input type="hidden" name="kursplanId" value="<%= kursplan.id %>">
+                                            <% } %>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+                                <a href="/neuer-termin" class="btn btn-dark">Zurück</a>
+                                <button class="btn btn-dark" type="submit">Speichern</button>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+
+
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+    <%- include('./partials/footer') %>

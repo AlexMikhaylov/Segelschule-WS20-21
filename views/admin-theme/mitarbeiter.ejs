@@ -1,0 +1,162 @@
+<%- include('./partials/header') %>
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Mitarbeiter verwalten</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Mitarbeiter verwalten</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements disabled -->
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h3 class="card-title">Mitarbeiter</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="table-list-teachers" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Bild</th>
+                                        <th>Name</th>
+                                        <th>Adresse</th>
+                                        <th>E-Mail</th>
+                                        <th>Telefon</th>
+                                        <th>Geburtsdatum</th>
+                                        <th>Qualifikationen</th>
+                                        <th>Honorar €/Std.</th>
+                                     
+                                        <th>Bewertung</th>
+                                        <th>Aktion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(mitarbeiter.length> 0) { %>
+                                        <% for (let ma of mitarbeiter) { %>
+                                            <tr>
+                                                <!-- ID-->
+                                                <td>
+                                                    <%= ma.id %>
+                                                </td>
+                                                <!-- Bild-->
+                                                <td>
+                                                    <% if(!ma.profilbild) { %>
+                                                        <img class="direct-chat-img" src="/dist/img/avatar2.png"
+                                                            alt="profilbild">
+                                                        <% } else {%>
+                                                            <img class="direct-chat-img" src="<%= ma.profilbild %>"
+                                                                alt="profilbild">
+                                                            <% } %>
+                                                </td>
+                                                <!-- Name-->
+                                                <td>
+                                                    <% if(ma.anrede==='Herr' || ma.anrede==='Frau' ) { %>
+                                                        <%= ma.anrede %>
+                                                            <% } %>
+                                                                <%= ma.vorname %>
+                                                                    <%= ma.nachname %>
+                                                </td>
+                                                <!-- Adresse-->
+                                                <td>
+                                                    <%= ma.Adresses[0].strasse %>
+                                                        <%= ma.Adresses[0].ort %>
+                                                            <%= ma.Adresses[0].plz %>
+                                                                <%= ma.Adresses[0].land %>
+                                                </td>
+                                                <!-- E-Mail-->
+                                                <td>
+                                                    <%= ma.email %>
+                                                </td>
+                                                <!--Telefon-->
+                                                <td>
+                                                    <%= ma.telefon %>
+                                                </td>
+                                                <!--Geburtsdatum-->
+                                                <td>
+                                                    <%= ma.geburtsdatum %>
+                                                </td>
+                                                <!--Qualifikationen-->
+                                                <td>
+                                                    <%= ma.qualifikationen %>
+                                                </td>
+                                                <!--Honorar-->
+                                                <td>
+                                                    <%= ma.honorar %>
+                                                </td>
+                                                <!--Bewertung-->
+                                                <td>
+                                                    <% if( ma.bewertung){ %>
+                                                    <%= ma.bewertung %>
+                                                    <% } else { %>
+                                                        <% let bewertung = (Math.random() * 4).toFixed(2); %>
+                                                        <%= bewertung %>
+                                                    <% } %>
+                                                </td>
+                                                <!--Aktion-->
+                                                <td>
+                                                    <a href="/mitarbeiter-bearbeiten/<%= ma.id %>?edit=true"
+                                                        class="btn btn-primary"><i class="fa fa-edit"></i></a>
+
+                                                    <form action="/mitarbeiter-loeschen" method="POST"
+                                                        id="frm-delete-ma-<%= ma.id %>">
+
+                                                        <input type="hidden" name="maId" value="<%= ma.id %>">
+
+                                                    </form>
+                                                    <a href="javascript:void(0)"
+                                                        onclick="if(confirm('Bist Du sicher, dass dieser Mitareiter gelöscht werden soll?')) { $('#frm-delete-ma-<%= ma.id %>').submit() }"
+                                                        class="btn btn-danger"><i class="fa fa-trash"></i></a>
+
+
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                                <% } %>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Bild</th>
+                                        <th>Name</th>
+                                        <th>Adresse</th>
+                                        <th>E-Mail</th>
+                                        <th>Telefon</th>
+                                        <th>Geburtsdatum</th>
+                                        <th>Qualifikationen</th>
+                                        <th>Honorar</th>
+                                     
+                                        <th>Bewertung</th>
+                                        <th>Aktion</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+    <%- include('./partials/footer') %>

@@ -1,0 +1,161 @@
+<%- include('./partials/header') %>
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Buchungen</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Buchungen</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements disabled -->
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h3 class="card-title">Kurse</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="table-list-orders" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Kunde</th>
+                                        <th>Kurs</th>
+                                        <th>Termine</th>
+                                        <th>Bestätigung</th>
+                                        <th>Gesamtsumme €</th>
+                                        <th>Teilnehmer</th>
+                                        <th>Status</th>
+                                        <th>Aktion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(buchungen.length> 0) { %>
+                                        <% for (let buchung of buchungen) { %>
+                                            <tr>
+                                            
+                                            <!--BuchungsID-->
+                                            <td>
+                                                <span id="buchung<%= buchung.id %>"><%= buchung.id %></span>
+                                            </td>
+                                            <!--Kunde-->
+                                            <td>
+                                                <a href="/kunden-verwalten/<%=buchung.Kunde.id%>?edit=true"><%= buchung.Kunde.name1 %> <%= buchung.Kunde.name2 %></a>
+                                            </td>
+                                            <!--Kurs-->
+                                            <td>
+                                                
+                                                <a href="/kurs-bearbeiten/<%=buchung.Kursplan.Kur.id%>?edit=true"><%= buchung.Kursplan.Kur.kursName %></a>
+                                            </td>
+                                            <!--Termine-->
+                                            <td>
+                                                <% if(buchung.Kursplan.Termins.length > 0) { %>
+                                                    <% for(let termin of buchung.Kursplan.Termins) { %>
+                                                         <p>
+                                                            <%= termin.datum %>
+                                                        </p>
+                                                   <% } %>
+                                              <%  } else { %>
+                                                keine Termine gefunden
+                                             <% } %>
+                                                
+                                            </td>
+                                            <!--Bestätigung-->
+                                            <td>
+                                                <a href="/pdf-download/<%= buchung.id%>">pdf-Beleg</a> 
+                                            </td>
+                                            <!--Summe-->
+                                            <td>
+                                                <%= buchung.summe %>
+                                            </td>
+                                            <!--Teilnehmer-->
+                                            <td>
+                                                <% if(!buchung.nurPruefung){ %>
+                                                    <%= buchung.Kunde.anzahl %>
+                                                <% }else{ %>
+                                                    Nur Prüfung, keine Kurs-Teilnahme
+                                                <% } %>
+                                                
+                                            </td>
+                                            <!--Status-->
+                                            <td>
+                                                <span class="<% if (buchung.status === 'storniert') { %> text-danger" <% } else { %> text-info" <% } %> >
+                                                    <%= buchung.status %>
+                                                </span> 
+                                                
+                                            </td>
+                                            <!--Aktion-->
+                                            <td>
+
+                                                <a href="/buchung-bearbeiten/<%= buchung.id %>?edit=true"
+                                                    class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                                                    <% if(buchung.status === 'storniert') { %>
+                                                        <form action="/buchung-stornieren" method="POST" id="frm-destroy-buchung-<%= buchung.id %>">
+        
+                                                            <input type="hidden" name="buchungId" value="<%= buchung.id %>">
+                                                            <input type="hidden" name="destroy" value="destroy">
+        
+                                                        </form>    
+                                                            <a href="javascript:void(0)" onclick="if(confirm('Bist Du sicher, dass diese Buchung entgültig gelöscht werden soll? Alle Daten gehen verloren')) { $('#frm-destroy-buchung-<%= buchung.id %>').submit() }" class="btn btn-danger"><i
+                                                                    class="fa fa-trash"></i></a>
+        
+                                                        <% } else { %>
+
+                                                <form action="/buchung-stornieren" method="POST" id="frm-delete-buchung-<%= buchung.id %>">
+
+                                                    <input type="hidden" name="buchungId" value="<%= buchung.id %>">
+
+                                                </form>    
+                                                    <a href="javascript:void(0)" onclick="if(confirm('Bist Du sicher, dass diese Buchung storniert werden soll?')) { $('#frm-delete-buchung-<%= buchung.id %>').submit() }" class="btn btn-danger"><i
+                                                            class="fa fa-trash"></i></a>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+
+                                        <% } %>
+
+
+                                    <% } %>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Kunde</th>
+                                        <th>Kurs</th>
+                                        <th>Termine</th>
+                                        <th>Bestätigung</th>
+                                        <th>Gesamtsumme €</th>
+                                        <th>Teilnehmer</th>
+                                        <th>Status</th>
+                                        <th>Aktion</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+    <%- include('./partials/footer') %>

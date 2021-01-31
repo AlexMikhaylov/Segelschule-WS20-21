@@ -1,0 +1,160 @@
+<%- include('./partials/header') %>
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"><% if(editing) { %>Kunden bearbeiten<% } else { %>Neuen Kunden anlegen<% } %></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active"><% if(editing) { %>Kunden bearbeiten<% } else { %>Neuen Kunden anlegen<% } %></li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements disabled -->
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h3 class="card-title"><% if(editing) { %>Kunden bearbeiten<% } else { %>Neuer Kunde<% } %></h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form id="frm_neuer_kunde" name="frm_neuer_kunde" method="POST" action="<% if(editing) { %>/kunden-bearbeiten<% } else { %>/neuer-kunde<% } %>" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Anrede</label>
+                                            <select class="form-control" placeholder="..." name="anrede">
+                                                <option value="keine" <% if(editing && kunde.anrede === 'keine') { %>selected<% } %>>keine</option>
+                                                <option value="Herr" <% if(editing && kunde.anrede === 'Herr') { %>selected<% } %>>Herr</option>
+                                                <option value="Frau" <% if(editing && kunde.anrede === 'Frau') { %>selected<% } %>>Frau</option>
+                                                <option value="andere" <% if(editing && kunde.anrede === 'andere') { %>selected<% } %>>andere</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Vorname / Name 1</label>
+                                            <input type="text" class="form-control" placeholder="..." value="<% if(editing) { %><%= kunde.name1 %><% } %>"
+                                                name="name1">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Nachname / Name 2</label>
+                                            <input required class="form-control" type="text" placeholder="..." value="<% if(editing) { %><%= kunde.name2 %><% } %>"
+                                                name="name2">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>E-Mail</label>
+                                            <input required type="email" class="form-control" placeholder="E-Mail" name="email" value="<% if(editing) { %><%= kunde.email %><% } %>">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- textarea -->
+                                        <div class="form-group">
+                                            <label>Telefon</label>
+                                            <input class="form-control" type="tel" name="telefon" value="<% if(editing) { %><%= kunde.telefon %><% } %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Geburtsdatum</label>
+                                            <input class="form-control" type="date" name="geburtsdatum" value="<% if(editing) { %><%= kunde.geburtsdatum %><% } %>">
+                                                
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- textarea -->
+                                        <div class="form-group">
+                                            
+                                            <% if(editing && kunde.profilbild) { %>
+                                                <label>Bild löschen?</label>
+                                                <input class="form control" type="checkbox" id="deleteBild" name="deleteBild">
+                                               <img class="form control direct-chat-img" src="<%= kunde.profilbild %>" alt="profilbild">
+            
+                                               
+                                            <% } else { %>
+                                            <label>Bild (optional)</label>
+                                            <% } %>
+                                            <input type="file" class="form-control" id="profilbild" name="profilbild">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Gruppengröße (1 bei Einzelkunden)</label>
+                                            <input required min="1" type="number" step="1" class="form-control" name="anzahl" value="<% if(editing) { %><%= kunde.anzahl %><% } %>">                                                
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- textarea -->
+                                        <div class="form-group">
+                                            <label>PLZ</label>
+                                            <input required type="text" class="form-control" name="plz" value="<% if(editing) { %><%= kunde.plz %><% } %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Ort</label>
+                                            <input required class="form-control" type="text" name="ort" value="<% if(editing) { %><%= kunde.ort %><% } %>">                                                
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- textarea -->
+                                        <div class="form-group">
+                                            <label>Straße</label>
+                                            <input required required type="text" class="form-control" name="strasse" value="<% if(editing) { %><%= kunde.strasse %><% } %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Land</label>
+                                            <input required class="form-control" type="text" name="land" value="<% if(editing) { %><%= kunde.land %><% }else{%>Deutschland<% } %>">                                                
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="kundenId" value="<% if(editing) { %><%= kunde.id %><% } %>">
+                                </div>
+                                <button class="btn btn-dark" type="submit">Speichern</button>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+    <%- include('./partials/footer') %>

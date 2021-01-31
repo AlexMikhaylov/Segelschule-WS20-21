@@ -1,0 +1,138 @@
+<%- include('./partials/header') %>
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Kurse verwalten</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Kurse verwalten</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements disabled -->
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h3 class="card-title">Kurse</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="table-list-courses" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Kurslogo</th>
+                                        <th>Name</th>
+                                        <th>Beschreibung</th>
+                                        <th>Kursleiter</th>
+                                        <th>Max. Teilnehmerzahl</th>
+                                        <th>Dauer</th>
+                                        <th>Material</th>
+                                        <th>Preis €</th>
+                                        <th>Prüfung €</th>
+                                        <th>Aktion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(kurse.length> 0) { %>
+                                        <% for (let kurs of kurse) { %>
+                                            <tr>
+
+                                                <td>
+                                                    <% if(!kurs.kursLogo) { %>
+                                                        <img class="direct-chat-img"
+                                                            src="/assets/images/big/kurslogo.jpg" alt="logo">
+                                                        <% } else {%>
+                                                            <img class="direct-chat-img" src="<%= kurs.kursLogo %>"
+                                                                alt="profilbild">
+                                                            <% } %>
+                                                </td>
+                                                <td>
+                                                    <%= kurs.kursName %>
+                                                </td>
+                                                <td>
+                                                    <%= kurs.beschreibung %>
+
+                                                </td>
+                                                <td>
+                                                    <%= kurs.anzahlKursleiter %>
+                                                </td>
+                                                <td>
+                                                    <%= kurs.maxTeilnehmer %>
+                                                </td>
+                                                <td>
+                                                    <%= kurs.dauerStunden %> Stunden je <%= kurs.dauerTage %> Tage
+                                                </td>
+                                                <td>
+                                                    <%= kurs.material %>
+                                                </td>
+                                                <td>
+                                                    <%= kurs.preisKurs %>
+                                                </td>
+                                                <td>
+                                                    <% if (!kurs.preisPruefung) { %>
+                                                        nicht angeboten
+                                                        <% } else { %>
+                                                            <%= kurs.preisPruefung %>
+                                                                <% } %>
+                                                </td>
+                                                <td>
+                                                    <a href="/kurs-bearbeiten/<%= kurs.id %>?edit=true"
+                                                        class="btn btn-primary"><i class="fa fa-edit"></i></a>
+
+                                                    <form action="/kurs-loeschen" method="POST"
+                                                        id="frm-delete-course-<%= kurs.id %>">
+
+                                                        <input type="hidden" name="kursId" value="<%= kurs.id %>">
+
+                                                    </form>
+                                                    <a href="javascript:void(0)"
+                                                        onclick="if(confirm('Bist Du sicher, dass dieser Kurs gelöscht werden soll?')) { $('#frm-delete-course-<%= kurs.id %>').submit() }"
+                                                        class="btn btn-danger"><i class="fa fa-trash"></i></a>
+
+
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    <% } %>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Kurslogo</th>
+                                        <th>Name</th>
+                                        <th>Beschreibung</th>
+                                        <th>Kursleiter</th>
+                                        <th>Max. Teilnehmerzahl</th>
+                                        <th>Dauer</th>
+                                        <th>Material</th>
+                                        <th>Preis €</th>
+                                        <th>Prüfung €</th>
+                                        <th>Aktion</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+    <%- include('./partials/footer') %>
