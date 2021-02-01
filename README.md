@@ -14,4 +14,4 @@ Backend: NodeJS mit ExpressJS
 Datenbank MySQL via Sequelize  
 Frontend auf Basis der Vorlage [AdminLTE3  ](https://adminlte.io)  
 
-Live-Version ist unter [login.surfandsailingschool.de](https://login.surfandsailingschool.de) zu finden
+Live-Version ist unter [login.surfandsailingschool.de](https://login.surfsailingschool.de) zu finden
